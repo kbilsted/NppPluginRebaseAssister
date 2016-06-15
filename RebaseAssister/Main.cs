@@ -55,7 +55,10 @@ namespace Kbg.NppPluginNET
 				    var currentPosition = scintillaGateway.GetCurrentPos();
 				    if (currentPosition != lastPositionWhenUiUpdate)
 				    {
-					    lastPositionWhenUiUpdate = firstWordSelector.SelectFirstWordOfLine(scintillaGateway);
+					    if (scintillaGateway.GetSelectionEmpty())
+					    {
+						    lastPositionWhenUiUpdate = firstWordSelector.SelectFirstWordOfLine(scintillaGateway);
+					    }
 				    }
 				    return;
 			    }
