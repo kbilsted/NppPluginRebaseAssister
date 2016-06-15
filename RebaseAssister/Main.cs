@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using Kbg.NppPluginNET.PluginInfrastructure;
+using RebaseAssister;
 
 namespace Kbg.NppPluginNET
 {
@@ -13,19 +11,97 @@ namespace Kbg.NppPluginNET
     {
         internal const string PluginName = "RebaseAssister";
 
-        public static void OnNotification(ScNotification notification)
-        {  
-            // This method is invoked whenever something is happening in notepad++
-            // use eg. as
-            // if (notification.Header.Code == (uint)NppMsg.NPPN_xxx)
-            // { ... }
-            // or
-            //
-            // if (notification.Header.Code == (uint)SciMsg.SCNxxx)
-            // { ... }
-        }
+		private static bool isPluginActive = false;
 
-        internal static void CommandMenuInit()
+		private static FirstWordOfLineSelector firstWordSelector = new FirstWordOfLineSelector();
+
+		// reduce the amount of selections
+		private static Position lastPositionWhenUiUpdate = null;
+
+		public static void OnNotification(ScNotification notification)
+		{
+			if (notification.Header.Code == (ulong)NppMsg.NPPN_BUFFERACTIVATED)
+			{
+				isPluginActive = IsGitRebaseFile();
+				return;
+			}
+
+			if (notification.Header.Code == (ulong)NppMsg.NPPN_FILEOPENED)
+			{
+				if (IsGitRebaseFile())
+				{
+					var scintillaGateway = new ScintillaGateway(PluginBase.GetCurrentScintilla());
+
+					AddTextToRebaseFile(scintillaGateway);
+
+					DisableAutoCompletePopup(scintillaGateway);
+
+					SetSyntaxHighlighting();
+				}
+
+				return;
+			}
+
+			EnsureFirstWordIsSelected(notification);
+		}
+
+	    private static void EnsureFirstWordIsSelected(ScNotification notification)
+	    {
+		    if (isPluginActive)
+		    {
+			    if (notification.Header.Code == (ulong) SciMsg.SCN_UPDATEUI)
+			    {
+				    var scintillaGateway = new ScintillaGateway(PluginBase.GetCurrentScintilla());
+				    var currentPosition = scintillaGateway.GetCurrentPos();
+				    if (currentPosition != lastPositionWhenUiUpdate)
+				    {
+					    lastPositionWhenUiUpdate = firstWordSelector.SelectFirstWordOfLine(scintillaGateway);
+				    }
+				    return;
+			    }
+
+			    if (notification.Header.Code == (ulong) SciMsg.SCN_MODIFIED)
+			    {
+				    var isTextInsertedOrDeleted = (notification.ModificationType &
+				                                   ((int) SciMsg.SC_MOD_INSERTTEXT | (int) SciMsg.SC_MOD_DELETETEXT)) > 0;
+				    if (isTextInsertedOrDeleted)
+				    {
+					    var scintillaGateway = new ScintillaGateway(PluginBase.GetCurrentScintilla());
+					    firstWordSelector.SelectFirstWordOfLine(scintillaGateway);
+				    }
+			    }
+		    }
+	    }
+
+	    private static void SetSyntaxHighlighting()
+		{
+			new NotepadPPGateway().SetCurrentLanguage(LangType.L_INI);
+		}
+
+		private static void DisableAutoCompletePopup(ScintillaGateway scintillaGateway)
+		{
+			scintillaGateway.AutoCStops("abcdefghijklmnopqrstuvwxyz");
+		}
+
+		private static void AddTextToRebaseFile(ScintillaGateway scintillaGateway)
+		{
+			string additionalText = @"#
+# Use Ctrl+Shift+Down to move lines down
+# Use Ctrl+Shift+Up to move lines up
+";
+			scintillaGateway.AppendText(additionalText.Length, additionalText);
+		}
+
+		static bool IsGitRebaseFile()
+		{
+			const string GitRebaseFilename = "git-rebase-todo";
+
+			var fileName = Path.GetFileName(new NotepadPPGateway().GetCurrentFilePath());
+
+			return fileName == GitRebaseFilename;
+		}
+
+		internal static void CommandMenuInit()
         {
             StringBuilder sbIniFilePath = new StringBuilder(Win32.MAX_PATH);
             Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, sbIniFilePath);
