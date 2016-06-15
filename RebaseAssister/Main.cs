@@ -30,7 +30,7 @@ namespace Kbg.NppPluginNET
             StringBuilder sbIniFilePath = new StringBuilder(Win32.MAX_PATH);
             Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, sbIniFilePath);
 
-            PluginBase.SetCommand(0, "MyMenuCommand", myMenuFunction, new ShortcutKey(false, false, false, Keys.None));
+            PluginBase.SetCommand(0, "About RebaseAssister", ShowAbout, new ShortcutKey(false, false, false, Keys.None));
         }
 
         internal static void SetToolBarIcon()
@@ -41,9 +41,18 @@ namespace Kbg.NppPluginNET
         {
         }
 
-		internal static void myMenuFunction()
+        private static void ShowAbout()
         {
-            MessageBox.Show("Hello N++!");
+            var message = @"Version: 1.00
+Assist you when you are doing interactive rebasing in Git/Hg/...
+
+License: This is freeware (Apache v2.0 license).
+
+Author: Kasper B. Graversen 2016-
+
+Website: https://github.com/kbilsted/NppPluginRebaseAssister";
+            var title = "RebaseAssister plugin";
+            MessageBox.Show(message, title, MessageBoxButtons.OK);
         }
     }
 }
