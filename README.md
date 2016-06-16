@@ -19,7 +19,7 @@ This plugin is too new to have been added to the notepad++ pluginmanager - that 
 
   * Instruct Git / hg to use Notepad++
     * `git config --global core.editor "'C:/Program Files (x86)/Notepad++/notepad++.exe' -multiInst -notabbar -nosession"`
-  * Download a binary release and stick the `RebaseAssister.dll` inside the `c:\program files (x86)\notepad++\plugins\` folder. Alternatively, download the source and build it - the build will copy the dll to the notepad folder.
+  * [Download](https://github.com/kbilsted/NppPluginRebaseAssister/releases) a binary release and stick the `RebaseAssister.dll` inside the `c:\program files (x86)\notepad++\plugins\` folder. Alternatively, download the source and build it - the build will copy the dll to the notepad folder.
 
 
 
