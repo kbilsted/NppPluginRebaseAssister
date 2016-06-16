@@ -1,15 +1,17 @@
 # RebaseAssister plugin for Notepad++
 
-It currently features
+What does the plugin do? Basically it auto-selects the first word of every non-comment line in an interactive rebase file..
 
-  * Auto-selection of git commands, making it super fast to change those `Pick` into whatever you need during interactive rebasing.
+Specifically it features
+
+  * Auto-selection of commands, making it super fast to change those `pick` instructions during interactive rebasing.
   * Syntax highlighting
 
-Notepad++ itself offers additional benefits 
+Using Notepad++ during interactive rebasing offers additional benefits 
 
-  * Short cuts for moving lines up/down
-  * Spell check (using the great `DSpellCheck` plugin)
-  * With verbose backup you'll always have a backup of the guids if you need to save deleted commits using reflog.
+  * Shortcuts for moving lines up/down (Ctrl+Shift+Up/Down)
+  * Spell checking (using the great `DSpellCheck` plugin)
+  * Verbose backup - you always have a backup of the guids of the rebase needed for salvaging deleted commits.
   
   
 # Installation
