@@ -13,7 +13,7 @@ namespace Kbg.NppPluginNET
 
 		private static bool isPluginActive = false;
 
-		private static FirstWordOfLineSelector firstWordSelector = new FirstWordOfLineSelector();
+		private static readonly FirstWordOfLineSelector firstWordSelector = new FirstWordOfLineSelector();
 
 		// reduce the amount of selections
 		private static Position lastPositionWhenUiUpdate = null;
