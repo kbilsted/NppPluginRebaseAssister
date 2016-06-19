@@ -124,7 +124,7 @@ namespace Kbg.NppPluginNET
 
 		private static void ShowAbout()
 		{
-			var message = @"Version: 1.00
+			var message = @"Version: 1.01
 Assist you when you are doing interactive rebasing in Git/Hg/...
 
 License: This is freeware (Apache v2.0 license).
