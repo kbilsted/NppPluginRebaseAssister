@@ -9,6 +9,7 @@ namespace Kbg.NppPluginNET
 {
 	class Main
 	{
+		internal const string Version = "1.01";
 		internal const string PluginName = "RebaseAssister";
 
 		private static bool isPluginActive = false;
@@ -51,6 +52,7 @@ namespace Kbg.NppPluginNET
 			if (isPluginActive)
 			{
 				nppResource.ClearIndicator();
+
 				if (notification.Header.Code == (ulong) SciMsg.SCN_UPDATEUI)
 				{
 					var scintillaGateway = new ScintillaGateway(PluginBase.GetCurrentScintilla());
@@ -65,14 +67,13 @@ namespace Kbg.NppPluginNET
 					return;
 				}
 
-				if (notification.Header.Code == (ulong) SciMsg.SCN_MODIFIED)
+				if (notification.Header.Code == (ulong)SciMsg.SCN_MODIFIED)
 				{
 					var isTextInsertedOrDeleted = (notification.ModificationType &
-					                               ((int) SciMsg.SC_MOD_INSERTTEXT | (int) SciMsg.SC_MOD_DELETETEXT)) > 0;
+												   ((int)SciMsg.SC_MOD_INSERTTEXT | (int)SciMsg.SC_MOD_DELETETEXT)) > 0;
 					if (isTextInsertedOrDeleted)
 					{
-						var scintillaGateway = new ScintillaGateway(PluginBase.GetCurrentScintilla());
-						firstWordSelector.SelectFirstWordOfLine(scintillaGateway);
+						lastPositionWhenUiUpdate = null;
 					}
 				}
 			}
@@ -91,8 +92,9 @@ namespace Kbg.NppPluginNET
 		private static void AddTextToRebaseFile(ScintillaGateway scintillaGateway)
 		{
 			string additionalText = @"#
-# Use Ctrl+Shift+Down to move lines down
-# Use Ctrl+Shift+Up to move lines up
+# Use Ctrl+Down to move lines down
+# Use Ctrl+Up to move lines up
+# Convenience brought by RebaseAssister plugin "+Version+@"
 ";
 			scintillaGateway.AppendText(additionalText.Length, additionalText);
 		}
@@ -109,9 +111,11 @@ namespace Kbg.NppPluginNET
 		internal static void CommandMenuInit()
 		{
 			StringBuilder sbIniFilePath = new StringBuilder(Win32.MAX_PATH);
-			Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, sbIniFilePath);
+			Win32.SendMessage(PluginBase.nppData._nppHandle, (uint)NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, sbIniFilePath);
 
-			PluginBase.SetCommand(0, "About RebaseAssister", ShowAbout, new ShortcutKey(false, false, false, Keys.None));
+			PluginBase.SetCommand(0, "Rebase MoveLineUp", MoveLineUp, new ShortcutKey(true, false, false, Keys.Up));
+			PluginBase.SetCommand(1, "Rebase MoveLineDown", MoveLineDown, new ShortcutKey(true, false, false, Keys.Down));
+			PluginBase.SetCommand(2, "About RebaseAssister", ShowAbout, new ShortcutKey(false, false, false, Keys.None));
 		}
 
 		internal static void SetToolBarIcon()
@@ -122,9 +126,25 @@ namespace Kbg.NppPluginNET
 		{
 		}
 
+		private static void MoveLineUp()
+		{
+			var scintillaGateway = new ScintillaGateway(PluginBase.GetCurrentScintilla());
+			scintillaGateway.SelectCurrentLine();
+			scintillaGateway.MoveSelectedLinesUp();
+			scintillaGateway.ClearSelectionToCursor();
+		}
+
+		private static void MoveLineDown()
+		{
+			var scintillaGateway = new ScintillaGateway(PluginBase.GetCurrentScintilla());
+			scintillaGateway.SelectCurrentLine();
+			scintillaGateway.MoveSelectedLinesDown();
+			scintillaGateway.ClearSelectionToCursor();
+		}
+
 		private static void ShowAbout()
 		{
-			var message = @"Version: 1.01
+			var message = @"Version: "+Version+@"
 Assist you when you are doing interactive rebasing in Git/Hg/...
 
 License: This is freeware (Apache v2.0 license).
