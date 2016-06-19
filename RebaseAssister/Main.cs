@@ -14,6 +14,7 @@ namespace Kbg.NppPluginNET
 		private static bool isPluginActive = false;
 
 		private static readonly FirstWordOfLineSelector firstWordSelector = new FirstWordOfLineSelector();
+		private static readonly NppResource nppResource = new NppResource();
 
 		// reduce the amount of selections
 		private static Position lastPositionWhenUiUpdate = null;
@@ -49,7 +50,7 @@ namespace Kbg.NppPluginNET
 		{
 			if (isPluginActive)
 			{
-
+				nppResource.ClearIndicator();
 				if (notification.Header.Code == (ulong) SciMsg.SCN_UPDATEUI)
 				{
 					var scintillaGateway = new ScintillaGateway(PluginBase.GetCurrentScintilla());
