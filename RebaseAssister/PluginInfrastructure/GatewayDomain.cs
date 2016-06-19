@@ -1,10 +1,9 @@
-﻿// NPP plugin platform for .Net v0.91.57 by Kasper B. Graversen etc.
+﻿// NPP plugin platform for .Net v0.92.76 by Kasper B. Graversen etc.
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
-using Kbg.NppPluginNET.PluginInfrastructure;
 
-namespace Kbg.NppPluginNET
+namespace Kbg.NppPluginNET.PluginInfrastructure
 {
     /// <summary>
     /// Colours are set using the RGB format (Red, Green, Blue). The intensity of each colour is set in the range 0 to 255.

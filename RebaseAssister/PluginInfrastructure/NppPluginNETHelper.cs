@@ -1,11 +1,11 @@
-﻿// NPP plugin platform for .Net v0.91.57 by Kasper B. Graversen etc.
+﻿// NPP plugin platform for .Net v0.92.76 by Kasper B. Graversen etc.
 using System;
 using System.Text;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace Kbg.NppPluginNET
+namespace Kbg.NppPluginNET.PluginInfrastructure
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct NppData

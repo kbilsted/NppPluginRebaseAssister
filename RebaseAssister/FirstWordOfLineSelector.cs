@@ -1,4 +1,4 @@
-﻿using Kbg.NppPluginNET;
+﻿using Kbg.NppPluginNET.PluginInfrastructure;
 
 namespace RebaseAssister
 {

@@ -1,17 +1,8 @@
-﻿// NPP plugin platform for .Net v0.91.57 by Kasper B. Graversen etc.
+﻿// NPP plugin platform for .Net v0.92.76 by Kasper B. Graversen etc.
 using System;
-using Kbg.NppPluginNET.PluginInfrastructure;
 
-namespace Kbg.NppPluginNET
+namespace Kbg.NppPluginNET.PluginInfrastructure
 {
-    public interface INotepadPPGateway
-    {
-        void FileNew();
-
-        string GetCurrentFilePath();
-        unsafe string GetFilePath(int bufferId);
-        void SetCurrentLanguage(LangType language);
-    }
 
     /// <summary>
     /// This it the plugin-writers primary interface to Notepad++/Scintilla.
@@ -24,6 +15,8 @@ namespace Kbg.NppPluginNET
         int GetSelectionLength();
         void AppendTextAndMoveCursor(string text);
         void InsertTextAndMoveCursor(string text);
+        void SelectCurrentLine();
+        void ClearSelectionToCursor();
 
         /// <summary>
         /// Get the current line from the current position
