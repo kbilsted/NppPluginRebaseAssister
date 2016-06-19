@@ -7,9 +7,9 @@ using RebaseAssister;
 
 namespace Kbg.NppPluginNET
 {
-    class Main
-    {
-        internal const string PluginName = "RebaseAssister";
+	class Main
+	{
+		internal const string PluginName = "RebaseAssister";
 
 		private static bool isPluginActive = false;
 
@@ -20,13 +20,13 @@ namespace Kbg.NppPluginNET
 
 		public static void OnNotification(ScNotification notification)
 		{
-			if (notification.Header.Code == (ulong)NppMsg.NPPN_BUFFERACTIVATED)
+			if (notification.Header.Code == (ulong) NppMsg.NPPN_BUFFERACTIVATED)
 			{
 				isPluginActive = IsGitRebaseFile();
 				return;
 			}
 
-			if (notification.Header.Code == (ulong)NppMsg.NPPN_FILEOPENED)
+			if (notification.Header.Code == (ulong) NppMsg.NPPN_FILEOPENED)
 			{
 				if (IsGitRebaseFile())
 				{
@@ -45,38 +45,39 @@ namespace Kbg.NppPluginNET
 			EnsureFirstWordIsSelected(notification);
 		}
 
-	    private static void EnsureFirstWordIsSelected(ScNotification notification)
-	    {
-		    if (isPluginActive)
-		    {
-			    if (notification.Header.Code == (ulong) SciMsg.SCN_UPDATEUI)
-			    {
-				    var scintillaGateway = new ScintillaGateway(PluginBase.GetCurrentScintilla());
-				    var currentPosition = scintillaGateway.GetCurrentPos();
-				    if (currentPosition != lastPositionWhenUiUpdate)
-				    {
-					    if (scintillaGateway.GetSelectionEmpty())
-					    {
-						    lastPositionWhenUiUpdate = firstWordSelector.SelectFirstWordOfLine(scintillaGateway);
-					    }
-				    }
-				    return;
-			    }
+		private static void EnsureFirstWordIsSelected(ScNotification notification)
+		{
+			if (isPluginActive)
+			{
 
-			    if (notification.Header.Code == (ulong) SciMsg.SCN_MODIFIED)
-			    {
-				    var isTextInsertedOrDeleted = (notification.ModificationType &
-				                                   ((int) SciMsg.SC_MOD_INSERTTEXT | (int) SciMsg.SC_MOD_DELETETEXT)) > 0;
-				    if (isTextInsertedOrDeleted)
-				    {
-					    var scintillaGateway = new ScintillaGateway(PluginBase.GetCurrentScintilla());
-					    firstWordSelector.SelectFirstWordOfLine(scintillaGateway);
-				    }
-			    }
-		    }
-	    }
+				if (notification.Header.Code == (ulong) SciMsg.SCN_UPDATEUI)
+				{
+					var scintillaGateway = new ScintillaGateway(PluginBase.GetCurrentScintilla());
+					var currentPosition = scintillaGateway.GetCurrentPos();
+					if (currentPosition != lastPositionWhenUiUpdate)
+					{
+						if (scintillaGateway.GetSelectionEmpty())
+						{
+							lastPositionWhenUiUpdate = firstWordSelector.SelectFirstWordOfLine(scintillaGateway);
+						}
+					}
+					return;
+				}
 
-	    private static void SetSyntaxHighlighting()
+				if (notification.Header.Code == (ulong) SciMsg.SCN_MODIFIED)
+				{
+					var isTextInsertedOrDeleted = (notification.ModificationType &
+					                               ((int) SciMsg.SC_MOD_INSERTTEXT | (int) SciMsg.SC_MOD_DELETETEXT)) > 0;
+					if (isTextInsertedOrDeleted)
+					{
+						var scintillaGateway = new ScintillaGateway(PluginBase.GetCurrentScintilla());
+						firstWordSelector.SelectFirstWordOfLine(scintillaGateway);
+					}
+				}
+			}
+		}
+
+		private static void SetSyntaxHighlighting()
 		{
 			new NotepadPPGateway().SetCurrentLanguage(LangType.L_INI);
 		}
@@ -105,24 +106,24 @@ namespace Kbg.NppPluginNET
 		}
 
 		internal static void CommandMenuInit()
-        {
-            StringBuilder sbIniFilePath = new StringBuilder(Win32.MAX_PATH);
-			Win32.SendMessage(PluginBase.nppData._nppHandle, (uint)NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, sbIniFilePath);
+		{
+			StringBuilder sbIniFilePath = new StringBuilder(Win32.MAX_PATH);
+			Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, sbIniFilePath);
 
-            PluginBase.SetCommand(0, "About RebaseAssister", ShowAbout, new ShortcutKey(false, false, false, Keys.None));
-        }
+			PluginBase.SetCommand(0, "About RebaseAssister", ShowAbout, new ShortcutKey(false, false, false, Keys.None));
+		}
 
-        internal static void SetToolBarIcon()
-        {
-        }
+		internal static void SetToolBarIcon()
+		{
+		}
 
-        internal static void PluginCleanUp()
-        {
-        }
+		internal static void PluginCleanUp()
+		{
+		}
 
-        private static void ShowAbout()
-        {
-            var message = @"Version: 1.00
+		private static void ShowAbout()
+		{
+			var message = @"Version: 1.00
 Assist you when you are doing interactive rebasing in Git/Hg/...
 
 License: This is freeware (Apache v2.0 license).
@@ -130,8 +131,8 @@ License: This is freeware (Apache v2.0 license).
 Author: Kasper B. Graversen 2016-
 
 Website: https://github.com/kbilsted/NppPluginRebaseAssister";
-            var title = "RebaseAssister plugin";
-            MessageBox.Show(message, title, MessageBoxButtons.OK);
-        }
-    }
+			var title = "RebaseAssister plugin";
+			MessageBox.Show(message, title, MessageBoxButtons.OK);
+		}
+	}
 }
