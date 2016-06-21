@@ -5,11 +5,11 @@ What does the plugin do? Basically it auto-selects the first word of every non-c
 Specifically it features
 
   * Auto-selection of commands, making it super fast to change those `pick` instructions during interactive rebasing.
+  * Shortcuts for moving lines up/down (`Ctrl` + `Up` or `Down`)
   * Syntax highlighting
 
 Using Notepad++ during interactive rebasing offers additional benefits 
 
-  * Shortcuts for moving lines up/down (Ctrl+Shift+Up/Down)
   * Spell checking (using the great `DSpellCheck` plugin)
   * Verbose backup - you always have a backup of the guids of the rebase needed for salvaging deleted commits.
   
